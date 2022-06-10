@@ -3,14 +3,14 @@
 import { ref } from 'vue';
 import type { Ref } from 'vue';
 
-
-
-
-type square = 'snake' | 'open'
+type square = 'snake' | 'open' | 'apple';
+type direction = 'left' | 'right' | 'up' | 'down';
 const BOARD_SIZE = 20
 
 let board = ref<square[][]>([...Array(BOARD_SIZE)].map(() => [...Array(BOARD_SIZE)].map(() => 'open')));
-let snakeLocation: [number, number][] = [];
+let snakeLocation: number[][] = [];
+let snakeDirection = ref<direction>('right');
+
 
 // Setup initial snake location
 for (var i: number = 3; i < 6; i++) {
@@ -20,7 +20,6 @@ for (var i: number = 3; i < 6; i++) {
 }
 
 const isSnake = (col: square) => { if (col === 'snake') return true };
-
 const isFood = (col: square) => { if (col === 'open') return true };
 
 const snakeDetails = () => {
@@ -31,7 +30,7 @@ const snakeDetails = () => {
 }
 
 const removeTail = (tail: number[]) => {
-    const [ i, j ] = tail;
+    const [i, j] = tail;
     board.value[i][j] = 'open';
     snakeLocation.shift();
 }
@@ -68,31 +67,46 @@ const moveDown = () => {
     removeTail(tail)
 }
 
+const moveSnake = () => {
+    const dir = snakeDirection.value
+    if (dir === 'up'){
+        moveUp()
+    }
+    else if (dir === 'down'){ 
+        moveDown() 
+    }
+    else if (dir === 'left'){ 
+        moveLeft() 
+    }
+    else { 
+        moveRight()     
+    }
+}
+
 
 document.onkeydown = function (e) {
     switch (e.key) {
         case 'ArrowUp':
-            moveUp();
+            snakeDirection.value = 'up'
             break;
         case 'ArrowDown':
             e.preventDefault();
-            moveDown();
+            snakeDirection.value = 'down'
             break;
         case 'ArrowLeft':
-            moveLeft()
+            snakeDirection.value = 'left';
             break;
         case 'ArrowRight':
-            moveRight();
+            snakeDirection.value = 'right';
             break;
     }
 };
 
 const myTimer = () => {
-    moveRight()
-    console.log('hi')
+    moveSnake()
 }
 
-setInterval(myTimer, 500);
+setInterval(myTimer, 100);
 
 
 const test = (row: square[], col: square) => {
@@ -102,7 +116,6 @@ const test = (row: square[], col: square) => {
 
 
 <template>
-
     <div v-for="row in board" class="row">
         <div v-for="col in row" class="square" :class="{ snake: isSnake(col), food: isFood(col) }"
             @click="test(row, col)"></div>
@@ -122,7 +135,7 @@ const test = (row: square[], col: square) => {
     display: inline-block;
 }
 
-.row{
+.row {
     height: 20px;
 }
 

@@ -5,12 +5,12 @@ import type { Ref } from 'vue';
 
 type square = 'snake' | 'open' | 'apple';
 type direction = 'left' | 'right' | 'up' | 'down';
-const BOARD_SIZE = 20
+const BOARD_SIZE = 25
 
 let board = ref<square[][]>([...Array(BOARD_SIZE)].map(() => [...Array(BOARD_SIZE)].map(() => 'open')));
 let snakeLocation: number[][] = [];
 let snakeDirection = ref<direction>('right');
-
+let grid = board.value;
 
 // Setup initial snake location
 for (var i: number = 3; i < 6; i++) {
@@ -18,9 +18,31 @@ for (var i: number = 3; i < 6; i++) {
     board.value[7][i] = initialSnake;
     snakeLocation.push([7, i]);
 }
+// initial food
+board.value[10][10] = 'apple'
 
-const isSnake = (col: square) => { if (col === 'snake') return true };
-const isFood = (col: square) => { if (col === 'open') return true };
+const continuousMovement = () => {
+    const dir = snakeDirection.value
+    if (dir === 'up') {
+        moveUp()
+    }
+    else if (dir === 'down') {
+        moveDown()
+    }
+    else if (dir === 'left') {
+        moveLeft()
+    }
+    else {
+        moveRight()
+    }
+}
+
+const myTimer = () => {
+    continuousMovement()
+}
+
+let interval = setInterval(myTimer, 100);
+// clearInterval(interval);
 
 const snakeDetails = () => {
     const snakeLength = snakeLocation.length;
@@ -29,60 +51,52 @@ const snakeDetails = () => {
     return { snakeLength, head, tail }
 }
 
-const removeTail = (tail: number[]) => {
-    const [i, j] = tail;
-    board.value[i][j] = 'open';
-    snakeLocation.shift();
+const isApple = (val: square) => {
+    return val === 'apple'
+}
+
+const removeTail = (shouldRemove: boolean, tail: number[]) => {
+    if (shouldRemove) {
+        const [i, j] = tail;
+        board.value[i][j] = 'open';
+        snakeLocation.shift();
+    }
+}
+
+const checkIllegalMove = (row: number, col: number) => {
+    
+}
+
+const generateApple = () => {
+
+}
+
+const moveSnake = (x: number, y: number) => {
+    const { snakeLength, head, tail } = snakeDetails();
+    const [i, j] = head;
+    checkIllegalMove(i + y, j + x);
+    const next = board.value[i + y][j + x];
+    const shouldRemove = !isApple(next);
+    removeTail(shouldRemove, tail);
+    board.value[i + y][j + x] = 'snake';
+    snakeLocation.push([i + y, j + x])
 }
 
 const moveLeft = () => {
-    const { snakeLength, head, tail } = snakeDetails();
-    const [i, j] = head;
-    board.value[i][j - 1] = 'snake';
-    snakeLocation.push([i, j - 1])
-    removeTail(tail)
+    moveSnake(-1, 0);
 }
 
 const moveRight = () => {
-    const { snakeLength, head, tail } = snakeDetails();
-    const [i, j] = head;
-    board.value[i][j + 1] = 'snake';
-    snakeLocation.push([i, j + 1])
-    removeTail(tail);
+    moveSnake(1, 0);
 }
 
 const moveUp = () => {
-    const { snakeLength, head, tail } = snakeDetails();
-    const [i, j] = head;
-    board.value[i - 1][j] = 'snake';
-    snakeLocation.push([i - 1, j])
-    removeTail(tail)
+    moveSnake(0, -1);
 }
 
 const moveDown = () => {
-    const { snakeLength, head, tail } = snakeDetails();
-    const [i, j] = head;
-    board.value[i + 1][j] = 'snake';
-    snakeLocation.push([i + 1, j])
-    removeTail(tail)
+    moveSnake(0, 1);
 }
-
-const moveSnake = () => {
-    const dir = snakeDirection.value
-    if (dir === 'up'){
-        moveUp()
-    }
-    else if (dir === 'down'){ 
-        moveDown() 
-    }
-    else if (dir === 'left'){ 
-        moveLeft() 
-    }
-    else { 
-        moveRight()     
-    }
-}
-
 
 document.onkeydown = function (e) {
     switch (e.key) {
@@ -102,13 +116,6 @@ document.onkeydown = function (e) {
     }
 };
 
-const myTimer = () => {
-    moveSnake()
-}
-
-setInterval(myTimer, 100);
-
-
 const test = (row: square[], col: square) => {
     console.log(col);
 }
@@ -116,9 +123,8 @@ const test = (row: square[], col: square) => {
 
 
 <template>
-    <div v-for="row in board" class="row">
-        <div v-for="col in row" class="square" :class="{ snake: isSnake(col), food: isFood(col) }"
-            @click="test(row, col)"></div>
+    <div v-for="(row, i) in board" class="row">
+        <div v-for="(col, j) in row" :class="`square ${grid[i][j]}`" @click="test(row, col)"></div>
     </div>
 </template>
 
@@ -141,6 +147,10 @@ const test = (row: square[], col: square) => {
 
 .snake {
     background-color: green;
+}
+
+.apple {
+    background-color: red;
 }
 
 .gameArea {

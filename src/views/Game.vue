@@ -11,7 +11,6 @@ let snakeLocation: number[][] = [];
 let snakeDirection = ref<direction>('right');
 let snakeSpeed = ref<number>(500);
 let lost = ref<boolean>(false);
-let lostRef = lost.value;
 let grid = board.value;
 let snakeSpeedChange = 200;
 
@@ -155,17 +154,24 @@ const test = (row: square[], col: square) => {
 
 <template>
     <div v-for="(row, i) in board" class="row">
-        <div v-for="(col, j) in row" :class="`square ${grid[i][j]}`" @click="test(row, col)"></div>
+        <div v-for="(col, j) in row" :class="`square ${board[i][j]}`" @click="test(row, col)"></div>
     </div>
-    <!-- <p :class="{ gameOver: lostRef}">
-        Game Over!
-    </p> -->
+    <div v-if="lost" class="lost">
+        <h1>
+            Game Over!
+        </h1>    
+    </div>
+
 </template>
 
 
 <style>
 .lost {
- color: black;
+ font-size: large;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ color:rgb(72, 203, 72);
 }
 
 .square {

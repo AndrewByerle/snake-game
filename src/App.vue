@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Counter from "./components/Counter.vue";
 import Todos from "./components/Todos.vue";
-import GameView from './views/GameView.vue'
+import Game from './views/Game.vue'
 // import router from "./router";
 import HomeView from "./views/HomeView.vue";
 import { RouterLink, useRouter } from "vue-router";
@@ -10,13 +10,15 @@ import { RouterLink, useRouter } from "vue-router";
 
 <template>
 
-  <div class="game">
+  <div class="center">
     <div>
-      <nav>
-        <RouterLink to="/game">Game</RouterLink> |
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-      <RouterView> </RouterView>
+      <div class="center">
+        <h1>
+          Snake
+        </h1>
+
+      </div>
+      <Game />
     </div>
   </div>
 
@@ -26,12 +28,14 @@ import { RouterLink, useRouter } from "vue-router";
 
 
 <style>
-.game {
+.center {
   padding-top: 5%;
-  color: white;
+  /* color: black; */
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: large;
+ color:rgb(72, 203, 72);
 }
 
 .title {

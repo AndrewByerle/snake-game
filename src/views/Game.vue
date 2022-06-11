@@ -1,7 +1,5 @@
 <script setup lang="ts">
-
 import { ref } from 'vue';
-import type { Ref } from 'vue';
 
 type square = 'snake' | 'open' | 'apple';
 type direction = 'left' | 'right' | 'up' | 'down';
@@ -9,17 +7,15 @@ const BOARD_SIZE = 25;
 let board = ref<square[][]>([...Array(BOARD_SIZE)].map(() => [...Array(BOARD_SIZE)].map(() => 'open')));
 let snakeLocation: number[][] = [];
 let snakeDirection = ref<direction>('right');
+let snakeSize = ref<number>(1)
 let snakeSpeed = ref<number>(500);
 let lost = ref<boolean>(false);
-let grid = board.value;
 let snakeSpeedChange = 200;
 
 // Setup initial snake location
-for (var i: number = 3; i < 6; i++) {
-    var initialSnake: square = 'snake';
-    board.value[7][i] = initialSnake;
-    snakeLocation.push([7, i]);
-}
+const initialSnake: square = 'snake';
+board.value[7][3] = initialSnake;
+snakeLocation.push([7, 3]);
 
 const continuousMovement = () => {
     const dir = snakeDirection.value
@@ -39,6 +35,7 @@ const continuousMovement = () => {
 
 const snakeDetails = () => {
     const snakeLength = snakeLocation.length;
+    snakeSize.value = snakeLength;
     const head = snakeLocation[snakeLength - 1];
     const tail = snakeLocation[0]
     return { snakeLength, head, tail }
@@ -77,14 +74,14 @@ const getRandomInt = (num: number) => {
 const generateApple = () => {
     let i = getRandomInt(BOARD_SIZE);
     let j = getRandomInt(BOARD_SIZE)
-    if (board.value[i][j] === 'snake'){
+    if (board.value[i][j] === 'snake') {
         generateApple();
-    } else{
+    } else {
         board.value[i][j] = 'apple'
     }
 }
 const gameState = () => {
-    if (lost.value === true){
+    if (lost.value === true) {
         return
     }
     continuousMovement()
@@ -104,7 +101,7 @@ const moveSnake = (x: number, y: number) => {
     const { head, tail } = snakeDetails();
     const [i, j] = head;
     checkIllegalMove(i + y, j + x);
-    if (lost.value === true){ return }
+    if (lost.value === true) { return }
     const next = board.value[i + y][j + x];
     const shouldRemove = !isApple(next);
     removeTail(shouldRemove, tail);
@@ -153,25 +150,52 @@ const test = (row: square[], col: square) => {
 
 
 <template>
+    <div>
+        <p class="title">
+            Snake Size: {{ snakeSize }}
+        </p>
+    </div>
     <div v-for="(row, i) in board" class="row">
         <div v-for="(col, j) in row" :class="`square ${board[i][j]}`" @click="test(row, col)"></div>
     </div>
     <div v-if="lost" class="lost">
-        <h1>
-            Game Over!
-        </h1>    
+        <div>
+            <h1>
+                Game Over!
+            </h1>
+            <div class="again">
+                <button>
+                    Play Again
+                </button>
+
+            </div>
+        </div>
     </div>
 
 </template>
 
 
 <style>
+.title {
+    font-size: large;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgb(72, 203, 72);
+}
+
+.again {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .lost {
- font-size: large;
- display: flex;
- align-items: center;
- justify-content: center;
- color:rgb(72, 203, 72);
+    font-size: large;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgb(72, 203, 72);
 }
 
 .square {

@@ -6,14 +6,14 @@ import type { Ref } from 'vue';
 type square = 'snake' | 'open' | 'apple';
 type direction = 'left' | 'right' | 'up' | 'down';
 const BOARD_SIZE = 25;
-let SNAKE_UPDATE_INTERVAL = 100;
-let APPLE_UPDATE_INTERVAL = 3000;
 let board = ref<square[][]>([...Array(BOARD_SIZE)].map(() => [...Array(BOARD_SIZE)].map(() => 'open')));
 let snakeLocation: number[][] = [];
 let snakeDirection = ref<direction>('right');
-let snakeSpeed = ref<number>(500)
-let lost = ref<boolean>(false)
+let snakeSpeed = ref<number>(500);
+let lost = ref<boolean>(false);
+let lostRef = lost.value;
 let grid = board.value;
+let snakeSpeedChange = 200;
 
 // Setup initial snake location
 for (var i: number = 3; i < 6; i++) {
@@ -65,8 +65,7 @@ const checkIllegalMove = (row: number, col: number) => {
         console.log('illegal move!')
         lost.value = true;
     }
-    const next = board.value[row][col];
-    if (next === 'snake') {
+    else if (board.value[row][col] === 'snake') {
         console.log('illegal move!')
         lost.value = true;
     }
@@ -85,14 +84,6 @@ const generateApple = () => {
         board.value[i][j] = 'apple'
     }
 }
-const myTimer = () => {
-    console.log(snakeSpeed.value)
-    continuousMovement()
-    // generateApple();
-}
-
-// let interval = setInterval(myTimer, snakeSpeed.value);
-// let appleInterval = setInterval(generateApple, APPLE_UPDATE_INTERVAL);
 const gameState = () => {
     if (lost.value === true){
         return
@@ -103,17 +94,17 @@ const gameState = () => {
 
 }
 
-let snakeTimeout = setTimeout(gameState, snakeSpeed.value)
+setTimeout(gameState, snakeSpeed.value)
 
 const increaseGameSpeed = () => {
-    snakeSpeed.value -= 100;
-    APPLE_UPDATE_INTERVAL -= 50;
+    snakeSpeedChange = Math.max(5, snakeSpeedChange - 50)
+    snakeSpeed.value = Math.max(30, snakeSpeed.value - snakeSpeedChange);
 }
 
 const moveSnake = (x: number, y: number) => {
-    const { snakeLength, head, tail } = snakeDetails();
+    const { head, tail } = snakeDetails();
     const [i, j] = head;
-    checkIllegalMove(i + y, j + x)
+    checkIllegalMove(i + y, j + x);
     if (lost.value === true){ return }
     const next = board.value[i + y][j + x];
     const shouldRemove = !isApple(next);
@@ -166,10 +157,17 @@ const test = (row: square[], col: square) => {
     <div v-for="(row, i) in board" class="row">
         <div v-for="(col, j) in row" :class="`square ${grid[i][j]}`" @click="test(row, col)"></div>
     </div>
+    <!-- <p :class="{ gameOver: lostRef}">
+        Game Over!
+    </p> -->
 </template>
 
 
 <style>
+.lost {
+ color: black;
+}
+
 .square {
     height: 20px;
     width: 20px;

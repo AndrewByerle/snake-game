@@ -10,25 +10,14 @@ import { RouterLink, useRouter } from "vue-router";
 
 <template>
 
-<div>
-  <div id="game">
-    <nav>
-      <RouterLink to="/game">Game</RouterLink> |
-      <RouterLink to="/about">About</RouterLink>
-    </nav>
+  <div class="game">
+    <div>
+      <nav>
+        <RouterLink to="/game">Game</RouterLink> |
+        <RouterLink to="/about">About</RouterLink>
+      </nav>
       <RouterView> </RouterView>
-  </div>
-
-  <div>
-    <Counter head="Counter1" />
-    <Counter head="Counter2" />
-    <Todos />
-  </div>
-  <div class="title">
-    <h2>
-      Home
-    </h2>
-  </div>
+    </div>
   </div>
 
 
@@ -37,19 +26,15 @@ import { RouterLink, useRouter } from "vue-router";
 
 
 <style>
-#app {
-  padding-left: 10%;
+.game {
   padding-top: 5%;
   color: white;
-  /* display: flex;
-  flex-flow: column nowrap;
-  gap: 1rem; */
-  background-color: rgb(34, 34, 54);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .title {
   width: 100px
 }
-
-
 </style>

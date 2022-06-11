@@ -5,11 +5,14 @@ import type { Ref } from 'vue';
 
 type square = 'snake' | 'open' | 'apple';
 type direction = 'left' | 'right' | 'up' | 'down';
-const BOARD_SIZE = 25
-
+const BOARD_SIZE = 25;
+let SNAKE_UPDATE_INTERVAL = 100;
+let APPLE_UPDATE_INTERVAL = 3000;
 let board = ref<square[][]>([...Array(BOARD_SIZE)].map(() => [...Array(BOARD_SIZE)].map(() => 'open')));
 let snakeLocation: number[][] = [];
 let snakeDirection = ref<direction>('right');
+let snakeSpeed = ref<number>(500)
+let lost = ref<boolean>(false)
 let grid = board.value;
 
 // Setup initial snake location
@@ -18,8 +21,6 @@ for (var i: number = 3; i < 6; i++) {
     board.value[7][i] = initialSnake;
     snakeLocation.push([7, i]);
 }
-// initial food
-board.value[10][10] = 'apple'
 
 const continuousMovement = () => {
     const dir = snakeDirection.value
@@ -37,13 +38,6 @@ const continuousMovement = () => {
     }
 }
 
-const myTimer = () => {
-    continuousMovement()
-}
-
-let interval = setInterval(myTimer, 100);
-// clearInterval(interval);
-
 const snakeDetails = () => {
     const snakeLength = snakeLocation.length;
     const head = snakeLocation[snakeLength - 1];
@@ -55,26 +49,82 @@ const isApple = (val: square) => {
     return val === 'apple'
 }
 
+
 const removeTail = (shouldRemove: boolean, tail: number[]) => {
     if (shouldRemove) {
         const [i, j] = tail;
         board.value[i][j] = 'open';
         snakeLocation.shift();
+    } else {
+        increaseGameSpeed()
     }
 }
 
 const checkIllegalMove = (row: number, col: number) => {
-    
+    if (row < 0 || col < 0 || row > BOARD_SIZE - 1 || col > BOARD_SIZE - 1) {
+        console.log('illegal move!')
+        // clearInterval(interval);
+        // clearInterval(appleInterval)
+        clearTimeout(snakeTimeout)
+        lost.value = true;
+        return true
+    }
+    const next = board.value[row][col];
+    if (next === 'snake') {
+        console.log('illegal move!')
+        clearTimeout(snakeTimeout)
+        // clearInterval(interval)
+        lost.value = true;
+        return true;
+    }
+    return false;
+}
+
+const getRandomInt = (num: number) => {
+    return Math.floor(Math.random() * num);
 }
 
 const generateApple = () => {
+    let i = getRandomInt(BOARD_SIZE);
+    let j = getRandomInt(BOARD_SIZE)
+    if (board.value[i][j] === 'snake'){
+        generateApple();
+    } else{
+        board.value[i][j] = 'apple'
+    }
+}
+const myTimer = () => {
+    console.log(snakeSpeed.value)
+    continuousMovement()
+    // generateApple();
+}
 
+// let interval = setInterval(myTimer, snakeSpeed.value);
+// let appleInterval = setInterval(generateApple, APPLE_UPDATE_INTERVAL);
+const gameState = () => {
+    if (lost.value === true){
+        return
+    }
+    continuousMovement()
+    generateApple();
+    setTimeout(gameState, snakeSpeed.value)
+
+}
+
+let snakeTimeout = setTimeout(gameState, snakeSpeed.value)
+
+const increaseGameSpeed = () => {
+    snakeSpeed.value -= 100;
+    APPLE_UPDATE_INTERVAL -= 50;
 }
 
 const moveSnake = (x: number, y: number) => {
     const { snakeLength, head, tail } = snakeDetails();
     const [i, j] = head;
-    checkIllegalMove(i + y, j + x);
+    checkIllegalMove(i + y, j + x)
+    if (lost.value === true){
+        return
+    }
     const next = board.value[i + y][j + x];
     const shouldRemove = !isApple(next);
     removeTail(shouldRemove, tail);
@@ -133,7 +183,7 @@ const test = (row: square[], col: square) => {
 .square {
     height: 20px;
     width: 20px;
-    background-color: gray;
+    background-color: lightgray;
     outline: 1px;
     outline-color: white;
     outline-style: solid;

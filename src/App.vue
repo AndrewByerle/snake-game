@@ -11,7 +11,6 @@ import { RouterLink, useRouter } from "vue-router";
 <template>
 
 <div>
-
   <div id="game">
     <nav>
       <RouterLink to="/game">Game</RouterLink> |
@@ -41,9 +40,11 @@ import { RouterLink, useRouter } from "vue-router";
 #app {
   padding-left: 10%;
   padding-top: 5%;
+  color: white;
   /* display: flex;
   flex-flow: column nowrap;
   gap: 1rem; */
+  background-color: rgb(34, 34, 54);
 }
 
 .title {

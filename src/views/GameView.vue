@@ -63,21 +63,13 @@ const removeTail = (shouldRemove: boolean, tail: number[]) => {
 const checkIllegalMove = (row: number, col: number) => {
     if (row < 0 || col < 0 || row > BOARD_SIZE - 1 || col > BOARD_SIZE - 1) {
         console.log('illegal move!')
-        // clearInterval(interval);
-        // clearInterval(appleInterval)
-        clearTimeout(snakeTimeout)
         lost.value = true;
-        return true
     }
     const next = board.value[row][col];
     if (next === 'snake') {
         console.log('illegal move!')
-        clearTimeout(snakeTimeout)
-        // clearInterval(interval)
         lost.value = true;
-        return true;
     }
-    return false;
 }
 
 const getRandomInt = (num: number) => {
@@ -122,9 +114,7 @@ const moveSnake = (x: number, y: number) => {
     const { snakeLength, head, tail } = snakeDetails();
     const [i, j] = head;
     checkIllegalMove(i + y, j + x)
-    if (lost.value === true){
-        return
-    }
+    if (lost.value === true){ return }
     const next = board.value[i + y][j + x];
     const shouldRemove = !isApple(next);
     removeTail(shouldRemove, tail);

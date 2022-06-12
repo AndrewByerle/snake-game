@@ -4,47 +4,38 @@ import { ref } from 'vue';
 type square = 'snake' | 'open' | 'apple';
 type direction = 'left' | 'right' | 'up' | 'down';
 const BOARD_SIZE = 25;
+const SNAKE_INITIAL_ROW = 7;
+const SNAKE_INITIAL_COL = 5;
+const FIRST_APPLE_TIMEOUT = 500; 
+const MIN_SNAKE_REFRESH_TIME = 50;
+const MIN_SNAKE_REFRESH_DECREASE = 20;
+const UPDATE_SNAKE_REFRESH_DECREASE = 100;
+const APPLE_GENERATION_TIMEOUT = 2000; // msec before next apple
 let board = ref<square[][]>([...Array(BOARD_SIZE)].map(() => [...Array(BOARD_SIZE)].map(() => 'open')));
 let snakeLocation: number[][] = [];
-let snakeDirection = ref<direction>('right');
-let snakeSize = ref<number>(1)
-let snakeSpeed = ref<number>(500);
+let snakeDirection = ref<direction>('right'); 
+let snakeSize = ref<number>(1);
+let snakeRefreshTime = ref<number>(500); // msec for snake to update
 let lost = ref<boolean>(false);
-let snakeSpeedChange = 200;
+let snakeRefreshTimeDecrease = 200;
 
 // Setup initial snake location
 const initialSnake: square = 'snake';
-board.value[7][3] = initialSnake;
-snakeLocation.push([7, 3]);
+board.value[SNAKE_INITIAL_ROW][SNAKE_INITIAL_COL] = initialSnake;
+snakeLocation.push([SNAKE_INITIAL_ROW, SNAKE_INITIAL_COL]);
 
-const continuousMovement = () => {
-    const dir = snakeDirection.value
-    if (dir === 'up') {
-        moveUp()
-    }
-    else if (dir === 'down') {
-        moveDown()
-    }
-    else if (dir === 'left') {
-        moveLeft()
-    }
-    else {
-        moveRight()
-    }
-}
 
 const snakeDetails = () => {
     const snakeLength = snakeLocation.length;
     snakeSize.value = snakeLength;
     const head = snakeLocation[snakeLength - 1];
-    const tail = snakeLocation[0]
+    const tail = snakeLocation[0];
     return { snakeLength, head, tail }
 }
 
 const isApple = (val: square) => {
-    return val === 'apple'
+    return val === 'apple';
 }
-
 
 const removeTail = (shouldRemove: boolean, tail: number[]) => {
     if (shouldRemove) {
@@ -52,7 +43,7 @@ const removeTail = (shouldRemove: boolean, tail: number[]) => {
         board.value[i][j] = 'open';
         snakeLocation.shift();
     } else {
-        increaseGameSpeed()
+        increaseGameSpeed();
     }
 }
 
@@ -80,21 +71,10 @@ const generateApple = () => {
         board.value[i][j] = 'apple'
     }
 }
-const gameState = () => {
-    if (lost.value === true) {
-        return
-    }
-    continuousMovement()
-    generateApple();
-    setTimeout(gameState, snakeSpeed.value)
-
-}
-
-setTimeout(gameState, snakeSpeed.value)
 
 const increaseGameSpeed = () => {
-    snakeSpeedChange = Math.max(5, snakeSpeedChange - 50)
-    snakeSpeed.value = Math.max(30, snakeSpeed.value - snakeSpeedChange);
+    snakeRefreshTimeDecrease = Math.max(MIN_SNAKE_REFRESH_DECREASE, snakeRefreshTimeDecrease - UPDATE_SNAKE_REFRESH_DECREASE)
+    snakeRefreshTime.value = Math.max(MIN_SNAKE_REFRESH_TIME, snakeRefreshTime.value - snakeRefreshTimeDecrease);
 }
 
 const moveSnake = (x: number, y: number) => {
@@ -109,8 +89,43 @@ const moveSnake = (x: number, y: number) => {
     snakeLocation.push([i + y, j + x])
 }
 
+const gameState = () => {
+    if (lost.value === true) {
+        return
+    }
+    continuousMovement()
+    setTimeout(gameState, snakeRefreshTime.value)
+}
+
+const appleState = () => {
+    if (lost.value === true) {
+        return
+    }
+    generateApple();
+    setTimeout(appleState, APPLE_GENERATION_TIMEOUT);
+}
+
+const continuousMovement = () => {
+    const dir = snakeDirection.value
+    if (dir === 'up') {
+        moveUp()
+    }
+    else if (dir === 'down') {
+        moveDown()
+    }
+    else if (dir === 'left') {
+        moveLeft()
+    }
+    else {
+        moveRight()
+    }
+}
+
+setTimeout(gameState, snakeRefreshTime.value);
+setTimeout(appleState, FIRST_APPLE_TIMEOUT);
+
 const replay = () => {
-    location.reload()
+    location.reload();
 }
 
 const moveLeft = () => {
@@ -146,11 +161,6 @@ document.onkeydown = function (e) {
             break;
     }
 };
-
-const test = (row: square[], col: square) => {
-    console.log(col);
-
-}
 </script>
 
 
@@ -161,7 +171,7 @@ const test = (row: square[], col: square) => {
         </p>
     </div>
     <div v-for="(row, i) in board" class="row">
-        <div v-for="(col, j) in row" :class="`square ${board[i][j]}`" @click="test(row, col)"></div>
+        <div v-for="(col, j) in row" :class="`square ${board[i][j]}`"></div>
     </div>
     <div v-if="lost" class="lost">
         <div>
@@ -189,15 +199,15 @@ const test = (row: square[], col: square) => {
 }
 
 .button {
-  background-color: rgb(72, 203, 72); 
-  border: none;
-  color: white;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  border-radius: 20px;
-  font-size: 16px;
+    background-color: rgb(72, 203, 72);
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 20px;
+    font-size: 16px;
 }
 
 .again {

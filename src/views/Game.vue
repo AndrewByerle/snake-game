@@ -6,14 +6,14 @@ type direction = 'left' | 'right' | 'up' | 'down';
 const BOARD_SIZE = 20;
 const SNAKE_INITIAL_ROW = 7;
 const SNAKE_INITIAL_COL = 5;
-const FIRST_APPLE_TIMEOUT = 500; 
+const FIRST_APPLE_TIMEOUT = 500;
 const MIN_SNAKE_REFRESH_TIME = 50;
 const MIN_SNAKE_REFRESH_DECREASE = 20;
 const UPDATE_SNAKE_REFRESH_DECREASE = 100;
 const APPLE_GENERATION_TIMEOUT = 2000; // msec before next apple
 let board = ref<square[][]>([...Array(BOARD_SIZE)].map(() => [...Array(BOARD_SIZE)].map(() => 'open')));
 let snakeLocation: number[][] = [];
-let snakeDirection = ref<direction>('right'); 
+let snakeDirection = ref<direction>('right');
 let snakeSize = ref<number>(1);
 let snakeRefreshTime = ref<number>(500); // msec for snake to update
 let lost = ref<boolean>(false);
@@ -161,6 +161,18 @@ document.onkeydown = function (e) {
             break;
     }
 };
+
+const isMobile = () => {
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        return true
+    } else {
+        return false
+    }
+}
+
+const test = () => {
+    console.log(isMobile())
+}
 </script>
 
 
@@ -171,9 +183,9 @@ document.onkeydown = function (e) {
         </p>
     </div>
     <div v-for="(row, i) in board" class="row">
-        <div v-for="(col, j) in row" :class="`square ${board[i][j]}`"></div>
+        <div v-for="(col, j) in row" :class="`square ${board[i][j]}`" @click="test"></div>
     </div>
-    <div v-if="lost" class="lost">
+    <!-- <div v-if="lost" class="lost">
         <div>
             <h1>
                 Game Over!
@@ -184,12 +196,61 @@ document.onkeydown = function (e) {
                 </button>
             </div>
         </div>
+    </div> -->
+
+    <div class="keys">
+        <div class="up arr"><i class="fa fa-arrow-up"></i></div>
+        <br />
+        <div class="left arr"><i class="fa fa-arrow-left"></i></div>
+        <div class="down arr"><i class="fa fa-arrow-down"></i></div>
+        <div class="right arr"><i class="fa fa-arrow-right"></i></div>
     </div>
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+
 
 </template>
 
 
 <style>
+@import url(https://fonts.googleapis.com/css?family=Lato:300);
+
+
+.keys {
+    font-family: 'Lato', sans-serif;
+    text-align: center;
+}
+
+.arr {
+    cursor: pointer;
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    line-height: 50px;
+    background: lightgrey;
+    color: white;
+    font-size: 20px;
+    border-right: 10px solid darken(grey, 20);
+    border-bottom: 10px solid darken(grey, 20);
+    border-left: 10px solid darken(grey, 15);
+    border-top: 10px solid darken(grey, 10);
+    display: inline-block;
+    margin: 5px;
+    transition: all .05s linear;
+}
+
+.arr:active{
+
+    border-bottom: 8px solid darken(grey, 20);
+    text-shadow: 0 0 10px white, 0 0 10px white, 0 0 20px white;    
+    transform: translate(0, 2px);
+}
+
+
+
+
+
+
+
 .title {
     font-size: large;
     display: flex;
@@ -197,6 +258,13 @@ document.onkeydown = function (e) {
     justify-content: center;
     color: rgb(72, 203, 72);
 }
+
+.middle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 
 .button {
     background-color: rgb(72, 203, 72);

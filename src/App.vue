@@ -1,10 +1,5 @@
 <script setup lang="ts">
-import Counter from "./components/Counter.vue";
-import Todos from "./components/Todos.vue";
 import Game from './views/Game.vue'
-// import router from "./router";
-import HomeView from "./views/HomeView.vue";
-import { RouterLink, useRouter } from "vue-router";
 </script>
 
 <template>

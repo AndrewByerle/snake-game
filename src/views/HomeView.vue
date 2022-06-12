@@ -4,6 +4,6 @@ import CounterVue from "@/components/Counter.vue";
 
 <template>
   <main>
-    <!-- <CounterVue /> -->
+    <CounterVue />
   </main>
 </template>

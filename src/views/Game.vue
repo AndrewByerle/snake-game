@@ -3,7 +3,7 @@ import { ref } from 'vue';
 
 type square = 'snake' | 'open' | 'apple';
 type direction = 'left' | 'right' | 'up' | 'down';
-const BOARD_SIZE = 25;
+const BOARD_SIZE = 24;
 const SNAKE_INITIAL_ROW = 7;
 const SNAKE_INITIAL_COL = 5;
 const FIRST_APPLE_TIMEOUT = 500; 

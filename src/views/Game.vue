@@ -109,6 +109,10 @@ const moveSnake = (x: number, y: number) => {
     snakeLocation.push([i + y, j + x])
 }
 
+const replay = () => {
+    location.reload()
+}
+
 const moveLeft = () => {
     moveSnake(-1, 0);
 }
@@ -145,6 +149,7 @@ document.onkeydown = function (e) {
 
 const test = (row: square[], col: square) => {
     console.log(col);
+
 }
 </script>
 
@@ -164,10 +169,9 @@ const test = (row: square[], col: square) => {
                 Game Over!
             </h1>
             <div class="again">
-                <button>
+                <button @click="replay" class="button">
                     Play Again
                 </button>
-
             </div>
         </div>
     </div>
@@ -182,6 +186,18 @@ const test = (row: square[], col: square) => {
     align-items: center;
     justify-content: center;
     color: rgb(72, 203, 72);
+}
+
+.button {
+  background-color: rgb(72, 203, 72); 
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  border-radius: 20px;
+  font-size: 16px;
 }
 
 .again {

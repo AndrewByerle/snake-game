@@ -182,7 +182,7 @@ const removeCopiedIcon = () => {
 
 const shareResults = async () => {
     showCopied.value = true;
-    let shareText = `Snake Length: ${snakeSize.value} `
+    let shareText = `Snake Length: ${snakeSize.value} \n`
     for (let i=0; i<snakeSize.value; i++){
         shareText += '🟩';
     }

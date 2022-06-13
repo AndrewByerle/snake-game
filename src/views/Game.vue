@@ -306,6 +306,7 @@ const test = () => {
 
 .row {
     height: 20px;
+    display: flex;
 }
 
 .snake {

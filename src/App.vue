@@ -4,9 +4,7 @@ import Game from './views/Game.vue'
 </script>
 
 <template>
-
   <Game />
-
 </template>
 
 

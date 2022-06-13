@@ -182,12 +182,16 @@ const removeCopiedIcon = () => {
 
 const shareResults = async () => {
     showCopied.value = true;
+    let shareText = `Snake Length: ${snakeSize.value} `
+    for (let i=0; i<snakeSize.value; i++){
+        shareText += '🟩';
+    }
     setTimeout(removeCopiedIcon, 2000);
     console.log(showCopied)
     try {
-        await navigator.clipboard.writeText(`Snake Length: ${snakeSize.value}`);
+        await navigator.clipboard.writeText(shareText);
     } catch ($e) {
-        alert('Cannot copy');
+        alert('copy failed');
     }
 }
 

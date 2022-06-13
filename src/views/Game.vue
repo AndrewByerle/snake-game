@@ -202,7 +202,7 @@ const test = () => {
         </div>
     </div>
 
-    <div class="keys" v-else-if="isMobile() && !lost">
+    <div class="keys" v-else-if="!lost">
         <div class="up arr" @click="setDirection('up')"><i class="fa fa-arrow-up" ></i></div>
         <br />
         <div class="left arr" @click="setDirection('left')"><i class="fa fa-arrow-left" ></i></div>

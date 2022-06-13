@@ -12,6 +12,7 @@ const MIN_SNAKE_REFRESH_TIME = 50;
 const MIN_SNAKE_REFRESH_DECREASE = 20;
 const UPDATE_SNAKE_REFRESH_DECREASE = 100;
 const APPLE_GENERATION_TIMEOUT = 2000; // msec before next apple
+const PLAY_AGAIN_TIMEOUT = 2000;
 let board = ref<square[][]>([...Array(BOARD_SIZE)].map(() => [...Array(BOARD_SIZE)].map(() => 'open')));
 let snakeLocation: number[][] = [];
 let snakeDirection = ref<direction>('right');
@@ -20,6 +21,7 @@ let snakeRefreshTime = ref<number>(500); // msec for snake to update
 let lost = ref<boolean>(false);
 let snakeRefreshTimeDecrease = 200;
 let showCopied= ref<boolean>(false);
+let isPlayAgainDisabled = ref<boolean>(true);
 
 // Setup initial snake location
 const initialSnake: square = 'snake';
@@ -95,8 +97,13 @@ const moveSnake = (x: number, y: number) => {
     snakeLocation.push([i + y, j + x])
 }
 
+const enablePlayAgain = () => {
+    isPlayAgainDisabled.value = false;
+}
+
 const gameState = () => {
     if (lost.value === true) {
+        setTimeout(enablePlayAgain, 2000)
         return
     }
     continuousMovement()
@@ -186,8 +193,7 @@ const shareResults = async () => {
     for (let i=0; i<snakeSize.value; i++){
         shareText += '🟩';
     }
-    setTimeout(removeCopiedIcon, 2000);
-    console.log(showCopied)
+    setTimeout(removeCopiedIcon, PLAY_AGAIN_TIMEOUT);
     try {
         await navigator.clipboard.writeText(shareText);
     } catch ($e) {
@@ -225,7 +231,7 @@ const test = () => {
                 Game Over!
             </h1>
             <div class="again">
-                <button @click="replay" class="button">
+                <button @click="replay" class="button" :class="{ greyedOut: isPlayAgainDisabled }" :disabled="isPlayAgainDisabled">
                     Play Again
                 </button>
             </div>
@@ -298,7 +304,6 @@ const test = () => {
 }
 
 .copied{
-    /* padding-bottom: 20em; */
     position: relative;
     top: -30px;
     color: black;
@@ -321,6 +326,10 @@ const test = () => {
     display: inline-block;
     border-radius: 20px;
     font-size: 16px;
+}
+
+.greyedOut {
+    background-color: lightGrey;
 }
 
 .again {

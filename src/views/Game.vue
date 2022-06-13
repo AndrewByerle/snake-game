@@ -206,23 +206,19 @@ const test = () => {
             </div>
         </div>
     </div>
-
     <div class="keys" v-else-if="!lost">
-        <div class="up arr" @click="setDirection('up')"><i class="fa fa-arrow-up" ></i></div>
+        <div class="up arr" @click="setDirection('up')"><i class="fa fa-arrow-up"></i></div>
         <br />
-        <div class="left arr" @click="setDirection('left')"><i class="fa fa-arrow-left" ></i></div>
-        <div class="down arr" @click="setDirection('down')"><i class="fa fa-arrow-down" ></i></div>
-        <div class="right arr" @click="setDirection('right')"><i class="fa fa-arrow-right" ></i></div>
-    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+        <div class="left arr" @click="setDirection('left')"><i class="fa fa-arrow-left"></i></div>
+        <div class="down arr" @click="setDirection('down')"><i class="fa fa-arrow-down"></i></div>
+        <div class="right arr" @click="setDirection('right')"><i class="fa fa-arrow-right"></i></div>
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
     </div>
-
-
 </template>
 
 
 <style>
 @import url(https://fonts.googleapis.com/css?family=Lato:300);
-
 
 .keys {
     font-family: 'Lato', sans-serif;
@@ -247,18 +243,11 @@ const test = () => {
     transition: all .05s linear;
 }
 
-.arr:active{
-
+.arr:active {
     border-bottom: 8px solid darken(grey, 20);
-    text-shadow: 0 0 10px white, 0 0 10px white, 0 0 20px white;    
+    text-shadow: 0 0 10px white, 0 0 10px white, 0 0 20px white;
     transform: translate(0, 2px);
 }
-
-
-
-
-
-
 
 .title {
     font-size: large;
@@ -273,7 +262,6 @@ const test = () => {
     align-items: center;
     justify-content: center;
 }
-
 
 .button {
     background-color: rgb(72, 203, 72);

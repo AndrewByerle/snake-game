@@ -34,7 +34,7 @@ const snakeDetails = () => {
     snakeSize.value = snakeLength;
     const head = snakeLocation[snakeLength - 1];
     const tail = snakeLocation[0];
-    return { snakeLength, head, tail }
+    return { snakeLength, head, tail };
 }
 
 const isApple = (val: square) => {
@@ -68,20 +68,20 @@ const getRandomInt = (num: number) => {
 
 const generateApple = () => {
     let i = getRandomInt(BOARD_SIZE);
-    let j = getRandomInt(BOARD_SIZE)
+    let j = getRandomInt(BOARD_SIZE);
     if (board.value[i][j] === 'snake') {
         generateApple();
     } else {
-        board.value[i][j] = 'apple'
+        board.value[i][j] = 'apple';
     }
 }
 
 const setDirection = (dir: direction) => {
-    snakeDirection.value = dir
+    snakeDirection.value = dir;
 }
 
 const increaseGameSpeed = () => {
-    snakeRefreshTimeDecrease = Math.max(MIN_SNAKE_REFRESH_DECREASE, snakeRefreshTimeDecrease - UPDATE_SNAKE_REFRESH_DECREASE)
+    snakeRefreshTimeDecrease = Math.max(MIN_SNAKE_REFRESH_DECREASE, snakeRefreshTimeDecrease - UPDATE_SNAKE_REFRESH_DECREASE);
     snakeRefreshTime.value = Math.max(MIN_SNAKE_REFRESH_TIME, snakeRefreshTime.value - snakeRefreshTimeDecrease);
 }
 
@@ -89,7 +89,7 @@ const moveSnake = (x: number, y: number) => {
     const { head, tail } = snakeDetails();
     const [i, j] = head;
     checkIllegalMove(i + y, j + x);
-    if (lost.value === true) { return }
+    if (lost.value === true) { return; }
     const next = board.value[i + y][j + x];
     const shouldRemove = !isApple(next);
     removeTail(shouldRemove, tail);
@@ -103,34 +103,34 @@ const enablePlayAgain = () => {
 
 const gameState = () => {
     if (lost.value === true) {
-        setTimeout(enablePlayAgain, 2000)
-        return
+        setTimeout(enablePlayAgain, PLAY_AGAIN_TIMEOUT);
+        return;
     }
-    continuousMovement()
-    setTimeout(gameState, snakeRefreshTime.value)
+    continuousMovement();
+    setTimeout(gameState, snakeRefreshTime.value);
 }
 
 const appleState = () => {
     if (lost.value === true) {
-        return
+        return;
     }
     generateApple();
     setTimeout(appleState, APPLE_GENERATION_TIMEOUT);
 }
 
 const continuousMovement = () => {
-    const dir = snakeDirection.value
+    const dir = snakeDirection.value;
     if (dir === 'up') {
-        moveUp()
+        moveUp();
     }
     else if (dir === 'down') {
-        moveDown()
+        moveDown();
     }
     else if (dir === 'left') {
-        moveLeft()
+        moveLeft();
     }
     else {
-        moveRight()
+        moveRight();
     }
 }
 
@@ -177,9 +177,9 @@ document.onkeydown = function (e) {
 
 const isMobile = () => {
     if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-        return true
+        return true;
     } else {
-        return false
+        return false;
     }
 }
 
@@ -189,7 +189,7 @@ const removeCopiedIcon = () => {
 
 const shareResults = async () => {
     showCopied.value = true;
-    let shareText = `Snake Length: ${snakeSize.value} \n`
+    let shareText = `Snake Length: ${snakeSize.value} \n`;
     for (let i=0; i<snakeSize.value; i++){
         shareText += '🟩';
     }
@@ -202,7 +202,7 @@ const shareResults = async () => {
 }
 
 const test = () => {
-    console.log(isMobile())
+    console.log(isMobile());
 }
 </script>
 

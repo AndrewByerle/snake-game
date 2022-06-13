@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import DoneCheckmark from '../components/icons/DoneCheckmark.vue';
 
 type square = 'snake' | 'open' | 'apple';
 type direction = 'left' | 'right' | 'up' | 'down';
@@ -18,6 +19,7 @@ let snakeSize = ref<number>(1);
 let snakeRefreshTime = ref<number>(500); // msec for snake to update
 let lost = ref<boolean>(false);
 let snakeRefreshTimeDecrease = 200;
+let showCopied= ref<boolean>(false);
 
 // Setup initial snake location
 const initialSnake: square = 'snake';
@@ -174,13 +176,18 @@ const isMobile = () => {
     }
 }
 
+const removeCopiedIcon = () => {
+    showCopied.value = false;
+}
+
 const shareResults = async () => {
-    console.log('SHARE')
+    showCopied.value = true;
+    setTimeout(removeCopiedIcon, 2000);
+    console.log(showCopied)
     try {
-      await navigator.clipboard.writeText(`Snake Length: ${snakeSize.value}`);
-      alert('Copied');
-    } catch($e) {
-      alert('Cannot copy');
+        await navigator.clipboard.writeText(`Snake Length: ${snakeSize.value}`);
+    } catch ($e) {
+        alert('Cannot copy');
     }
 }
 
@@ -220,6 +227,12 @@ const test = () => {
             </div>
             <div class="again" @click="shareResults">
                 <p>Share</p>
+                <div class="checkMark" v-if="showCopied">
+                    <DoneCheckmark />
+                    <div class="copied">
+                        <p> copied</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -278,6 +291,20 @@ const test = () => {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.copied{
+    /* padding-bottom: 20em; */
+    position: relative;
+    top: -30px;
+    color: black;
+}
+
+.checkMark {
+    transform: scale(.65);
+    height:50px;
+    position: absolute;
+    padding-left: 6em;
 }
 
 .button {

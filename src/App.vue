@@ -1,35 +1,18 @@
 <script setup lang="ts">
 import Game from './views/Game.vue'
+
 </script>
 
 <template>
-  <div class="center">
-    <div>
-      <div class="title">
-        <h1>
-          Snake
-        </h1>
-      </div>
-      <Game />
-    </div>
-  </div>
+
+  <Game />
+
 </template>
 
 
 
 <style>
-.center {
-  padding-top: 5%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.title {
- font-size: large;
- display: flex;
- align-items: center;
- justify-content: center;
- color:rgb(72, 203, 72);
+body {
+  margin: 0;
 }
 </style>

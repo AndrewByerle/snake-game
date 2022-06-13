@@ -72,6 +72,10 @@ const generateApple = () => {
     }
 }
 
+const setDirection = (dir: direction) => {
+    snakeDirection.value = dir
+}
+
 const increaseGameSpeed = () => {
     snakeRefreshTimeDecrease = Math.max(MIN_SNAKE_REFRESH_DECREASE, snakeRefreshTimeDecrease - UPDATE_SNAKE_REFRESH_DECREASE)
     snakeRefreshTime.value = Math.max(MIN_SNAKE_REFRESH_TIME, snakeRefreshTime.value - snakeRefreshTimeDecrease);
@@ -147,17 +151,17 @@ const moveDown = () => {
 document.onkeydown = function (e) {
     switch (e.key) {
         case 'ArrowUp':
-            snakeDirection.value = 'up'
+            setDirection('up');
             break;
         case 'ArrowDown':
             e.preventDefault();
-            snakeDirection.value = 'down'
+            setDirection('down');
             break;
         case 'ArrowLeft':
-            snakeDirection.value = 'left';
+            setDirection('left');
             break;
         case 'ArrowRight':
-            snakeDirection.value = 'right';
+            setDirection('right');
             break;
     }
 };
@@ -185,7 +189,7 @@ const test = () => {
     <div v-for="(row, i) in board" class="row">
         <div v-for="(col, j) in row" :class="`square ${board[i][j]}`" @click="test"></div>
     </div>
-    <!-- <div v-if="lost" class="lost">
+    <div v-if="lost" class="lost">
         <div>
             <h1>
                 Game Over!
@@ -196,16 +200,16 @@ const test = () => {
                 </button>
             </div>
         </div>
-    </div> -->
-
-    <div class="keys">
-        <div class="up arr"><i class="fa fa-arrow-up"></i></div>
-        <br />
-        <div class="left arr"><i class="fa fa-arrow-left"></i></div>
-        <div class="down arr"><i class="fa fa-arrow-down"></i></div>
-        <div class="right arr"><i class="fa fa-arrow-right"></i></div>
     </div>
+
+    <div class="keys" v-else-if="isMobile() && !lost">
+        <div class="up arr" @click="setDirection('up')"><i class="fa fa-arrow-up" ></i></div>
+        <br />
+        <div class="left arr" @click="setDirection('left')"><i class="fa fa-arrow-left" ></i></div>
+        <div class="down arr" @click="setDirection('down')"><i class="fa fa-arrow-down" ></i></div>
+        <div class="right arr" @click="setDirection('right')"><i class="fa fa-arrow-right" ></i></div>
     <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+    </div>
 
 
 </template>

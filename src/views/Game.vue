@@ -191,8 +191,12 @@ const test = () => {
             Snake Size: {{ snakeSize }}
         </p>
     </div>
-    <div v-for="(row, i) in board" class="middle row">
-        <div v-for="(col, j) in row" :class="`square ${board[i][j]}`" @click="test"></div>
+    <div class="middle">
+        <div>
+            <div v-for="(row, i) in board" class="row">
+                <div v-for="(col, j) in row" :class="`square ${board[i][j]}`" @click="test"></div>
+            </div>
+        </div>
     </div>
     <div v-if="lost" class="lost">
         <div>

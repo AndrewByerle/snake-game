@@ -174,6 +174,16 @@ const isMobile = () => {
     }
 }
 
+const shareResults = async () => {
+    console.log('SHARE')
+    try {
+      await navigator.clipboard.writeText(`Snake Length: ${snakeSize.value}`);
+      alert('Copied');
+    } catch($e) {
+      alert('Cannot copy');
+    }
+}
+
 const test = () => {
     console.log(isMobile())
 }
@@ -207,6 +217,9 @@ const test = () => {
                 <button @click="replay" class="button">
                     Play Again
                 </button>
+            </div>
+            <div class="again" @click="shareResults">
+                <p>Share</p>
             </div>
         </div>
     </div>

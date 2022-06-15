@@ -8,18 +8,15 @@ const BOARD_SIZE = 20;
 const SNAKE_INITIAL_ROW = 7;
 const SNAKE_INITIAL_COL = 5;
 const FIRST_APPLE_TIMEOUT = 500;
-const MIN_SNAKE_REFRESH_TIME = 50;
-const MIN_SNAKE_REFRESH_DECREASE = 20;
-const UPDATE_SNAKE_REFRESH_DECREASE = 100;
 const APPLE_GENERATION_TIMEOUT = 2000; // msec before next apple
 const PLAY_AGAIN_TIMEOUT = 2000;
 let board = ref<square[][]>([...Array(BOARD_SIZE)].map(() => [...Array(BOARD_SIZE)].map(() => 'open')));
-let snakeLocation: number[][] = [];
+let snakeLocation: number[][] = []; // list of [i, j] locations where snake exists
 let snakeDirection = ref<direction>('right');
 let snakeSize = ref<number>(1);
 let snakeRefreshTime = ref<number>(500); // msec for snake to update
 let lost = ref<boolean>(false);
-let snakeRefreshTimeDecrease = 200;
+let newSpeed = 500;
 let showCopied= ref<boolean>(false);
 let isPlayAgainDisabled = ref<boolean>(true);
 
@@ -79,10 +76,9 @@ const generateApple = () => {
 const setDirection = (dir: direction) => {
     snakeDirection.value = dir;
 }
-
 const increaseGameSpeed = () => {
-    snakeRefreshTimeDecrease = Math.max(MIN_SNAKE_REFRESH_DECREASE, snakeRefreshTimeDecrease - UPDATE_SNAKE_REFRESH_DECREASE);
-    snakeRefreshTime.value = Math.max(MIN_SNAKE_REFRESH_TIME, snakeRefreshTime.value - snakeRefreshTimeDecrease);
+    newSpeed = newSpeed - Math.log2(newSpeed) * 8 + 50;
+    snakeRefreshTime.value = newSpeed;
 }
 
 const moveSnake = (x: number, y: number) => {
@@ -219,7 +215,7 @@ const test = () => {
         </p>
     </div>
     <div class="middle">
-        <div>
+        <div class="gameArea">
             <div v-for="(row, i) in board" class="row">
                 <div v-for="(col, j) in row" :class="`square ${board[i][j]}`" @click="test"></div>
             </div>
@@ -371,7 +367,7 @@ const test = () => {
 }
 
 .gameArea {
-    width: 500px;
-    height: 500px
+    background-color: lightgray;
+   
 }
 </style>

@@ -1,4 +1,10 @@
-# quick-start
+# Snake Game!
+
+Eating apples enhances the snakes size. Don't let the snake collide with itself or the walls!
+
+<img width="674" alt="snakeGame" src="https://user-images.githubusercontent.com/69771004/214192213-80095b8a-036b-48e2-8930-cbddbedd809e.png">
+
+
 
 This template should help get you started developing with Vue 3 in Vite.
 

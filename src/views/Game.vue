@@ -4,23 +4,23 @@ import { BOARD_SIZE } from "@/constants";
 import { direction } from "@/composables/snakeGame";
 import Share from "../components/share/Share.vue";
 
-const { board, lost, score, isRunning, setDirection, startGame } =
+const { board, lost, score, isRunning, setNewDirection, startGame } =
   useSnakeGame(BOARD_SIZE);
 
 document.onkeyup = function (e) {
   e.preventDefault();
   switch (e.key) {
     case "ArrowUp":
-      setDirection(direction.UP);
+      setNewDirection(direction.UP);
       break;
     case "ArrowDown":
-      setDirection(direction.DOWN);
+      setNewDirection(direction.DOWN);
       break;
     case "ArrowLeft":
-      setDirection(direction.LEFT);
+      setNewDirection(direction.LEFT);
       break;
     case "ArrowRight":
-      setDirection(direction.RIGHT);
+      setNewDirection(direction.RIGHT);
       break;
   }
 };
@@ -61,17 +61,17 @@ const copyScore = async () => {
     </div>
   </div>
   <div class="keys" v-else-if="!lost">
-    <button class="up arr" @click="setDirection(direction.UP)">
+    <button class="up arr" @click="setNewDirection(direction.UP)">
       <i class="fa fa-arrow-up"></i>
     </button>
     <br />
-    <button class="left arr" @click="setDirection(direction.LEFT)">
+    <button class="left arr" @click="setNewDirection(direction.LEFT)">
       <i class="fa fa-arrow-left"></i>
     </button>
-    <button class="down arr" @click="setDirection(direction.DOWN)">
+    <button class="down arr" @click="setNewDirection(direction.DOWN)">
       <i class="fa fa-arrow-down"></i>
     </button>
-    <button class="right arr" @click="setDirection(direction.RIGHT)">
+    <button class="right arr" @click="setNewDirection(direction.RIGHT)">
       <i class="fa fa-arrow-right"></i>
     </button>
     <link

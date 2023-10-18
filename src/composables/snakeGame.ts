@@ -1,4 +1,4 @@
-import { ref, watch } from "vue";
+import { computed, ref, watch, type Ref } from "vue";
 import {
   BOARD_SIZE,
   SNAKE_INITIAL_ROW,
@@ -29,6 +29,7 @@ export const useSnakeGame = (boardSize: number) => {
     [SNAKE_INITIAL_ROW, SNAKE_INITIAL_COL],
   ]); // list of [i, j] locations where snake exists
   const snakeDirection = ref(direction.RIGHT);
+  const newDirection = ref<direction>(direction.RIGHT)
   const snakeRefreshTime = ref(INITIAL_SNAKE_SPEED); // msec for snake to update
   const lost = ref(false);
   const score = ref(1);
@@ -57,12 +58,29 @@ export const useSnakeGame = (boardSize: number) => {
       snakeRefreshTime.value - Math.log2(snakeRefreshTime.value) * 8 + 50;
   };
 
+  const allEqual = (arr: number[]) => {
+    return arr.every((val) => val === arr[0])
+  }
+
+  const xValues = ref<number[]>([])
+  const yValues = ref<number[]>([])
+
+  const isSnakeLinear = () => {
+    xValues.value = []
+    yValues.value = []
+    for (const loc of snakeLocation.value){
+        xValues.value.push(loc[0])
+        yValues.value.push(loc[1])
+    }
+    return allEqual(xValues.value) || allEqual(yValues.value);
+  }
+
   const checkIllegalMove = (row: number, col: number) => {
     if (row < 0 || col < 0 || row > BOARD_SIZE - 1 || col > BOARD_SIZE - 1) {
       console.log("illegal move!");
       lost.value = true;
       isRunning.value = false;
-    } else if (board.value[row][col] === "snake") {
+    } else if (board.value[row][col] === "snake" && !isSnakeLinear()) {
       console.log("illegal move!");
       lost.value = true;
       isRunning.value = false;
@@ -83,13 +101,32 @@ export const useSnakeGame = (boardSize: number) => {
     }
   };
 
-  const setDirection = (dir: direction) => {
-    snakeDirection.value = dir;
+  const setNewDirection = (dir: direction) => {
+    newDirection.value = dir;
   };
 
+  const directionSet = new Set()
+  
+  const directionIsReverse = () => {
+    directionSet.clear()
+    directionSet.add(snakeDirection.value)
+    directionSet.add(newDirection.value)
+    return (directionSet.has(direction.UP) && directionSet.has(direction.DOWN)) 
+      || (directionSet.has(direction.LEFT) && directionSet.has(direction.RIGHT))
+  }
+
   const moveSnake = (x: number, y: number) => {
+    const reverseDirection = directionIsReverse()
+    if (isSnakeLinear() && reverseDirection){
+      snakeLocation.value.reverse()
+    } 
+    else if (reverseDirection) {
+      newDirection.value = snakeDirection.value
+      continuousMovement()
+      return
+    }
     const { head, tail } = snakeDetails();
-    const [i, j] = head;
+    const [i, j] = head
     checkIllegalMove(i + y, j + x);
     if (lost.value === true) {
       return;
@@ -102,6 +139,7 @@ export const useSnakeGame = (boardSize: number) => {
     }
     board.value[i + y][j + x] = "snake";
     snakeLocation.value.push([i + y, j + x]);
+    snakeDirection.value = newDirection.value;
   };
 
   const snakeTimer = () => {
@@ -121,9 +159,9 @@ export const useSnakeGame = (boardSize: number) => {
   };
 
   const continuousMovement = () => {
-    switch (snakeDirection.value) {
+    switch (newDirection.value) {
       case "up":
-        moveSnake(0, -1);
+        moveSnake(0, -1); 
         break;
       case "right":
         moveSnake(1, 0);
@@ -157,5 +195,7 @@ export const useSnakeGame = (boardSize: number) => {
     snakeLocation.value = [[SNAKE_INITIAL_ROW, SNAKE_INITIAL_COL]];
   };
 
-  return { board, lost, score, isRunning, setDirection, startGame };
+  return { board, lost, score, isRunning, setNewDirection, startGame };
 };
+
+
